@@ -1,0 +1,53 @@
+# Backend (Python) .gitignore
+
+# Byte-compiled / optimized / DLL files
+__pycache__/
+*.py[cod]
+*$py.class
+
+# C extensions
+*.so
+
+# Distribution / packaging
+build/
+dist/
+eggs/
+*.egg-info/
+*.egg
+
+# Virtual environments
+venv/
+.venv/
+env/
+ENV/
+
+# Installer logs
+pip-log.txt
+pip-delete-this-directory.txt
+
+# Unit test / coverage
+.pytest_cache/
+.coverage
+htmlcov/
+
+# PyInstaller
+*.manifest
+*.spec
+
+# Mypy
+.mypy_cache/
+
+# Env files
+.env
+.env.*.local
+
+# Logs
+*.log
+
+# Database
+*.sqlite3
+*.db
+
+# Editor
+.vscode/
+.idea/
