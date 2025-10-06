@@ -1,4 +1,22 @@
-# AI Promo Creator - Claude Project Context
+# AI Promo Creator 
+
+## Rules
+
+- before you do any work, MUST view files in .claude/tasks/context_session_x.md file to get the full context (x being the id of the session we are operating in, if file doesn't exist, then create one)
+- context_session_x.md should contain most of the context of what we did, overall plan, and sub agents will continuously add context to the file
+- after you finish the work, MUST update/append the .claude/tasks/context_session_x.md to make sure others can get full context of what you did. you MUST preserve the existing conversation.
+
+### Sub agents
+
+You have access to 4 sub agents:
+
+- product-manager: any tasks related to product questions and user behavior, consult this agent
+- senior-software-engineer: any tasks related to non-trivial UI changes, consult this agent for UI engineering expertise
+- senior-ux-designer: any tasks related to comply with design principles, the user experiences, consult this agent
+- shadcn-architect: all tasks related to UI building and tweaking, consult this agent
+
+Sub-agents will do research about the implementation, but you will do the actual implementation; when passing tasks to sub agent, make sure you pass the the context file, e.g. '.claude/tasks/session_context_x.md'.
+After each sub agent finish the work, make sure you read the related documentation they created to get full context of the plan before you start executing.
 
 ## Project Overview
 AI Promo Creator automatically generates short promotional videos for restaurants from a single Google Maps URL. The system extracts restaurant data, generates scripts, creates voiceovers, and assembles final videos.
