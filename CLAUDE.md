@@ -22,10 +22,10 @@ After each sub agent finish the work, make sure you read the related documentati
 AI Promo Creator automatically generates short promotional videos for restaurants from a single Google Maps URL. The system extracts restaurant data, generates scripts, creates voiceovers, and assembles final videos.
 
 ## Architecture
-- **Backend:** FastAPI with Agno Framework
-- **Frontend:** Next.js web application
-- **Agents:** MapParser, MenuExtractor, ScriptGenerator, VideoGenerator, Controller
-- **Storage:** S3 for files, DynamoDB for metadata
+- **Backend:** AgentOS (Agno Framework) - Production Runtime & Control Plane
+- **Frontend:** Next.js web application with real-time WebSocket integration
+- **Agents:** Restaurant Specialist, Menu Analyst, Content Creator, Video Producer, Main Orchestrator
+- **Storage:** SQLite (conversations) + S3 (assets)
 - **APIs:** Google Places, OpenAI/Claude, ElevenLabs, Pexels
 
 ## Project Structure
@@ -35,33 +35,49 @@ promo-vid-gen/
 │   ├── prod-doc.md         # Product requirements & user stories
 │   ├── tech-doc.md         # Technical architecture & design
 │   └── frontend-doc.md     # Frontend design & UI specifications
-├── backend/                 # Python FastAPI backend
+├── backend/                 # AgentOS Backend
 │   ├── src/
-│   │   ├── agents/         # AI agent implementations
-│   │   │   ├── map_parser.py       # Google Maps data extraction
-│   │   │   ├── menu_extractor.py   # Website menu scraping
-│   │   │   ├── script_generator.py # AI script generation
-│   │   │   └── video_generator.py  # Video assembly & rendering
-│   │   ├── api/            # FastAPI routes and server
-│   │   │   └── main.py     # Main FastAPI application
-│   │   ├── core/           # Shared utilities and base classes
-│   │   │   └── base_agent.py # Base agent with logging/validation
-│   │   └── workflows/      # Workflow orchestration
-│   │       └── video_workflow.py # Complete generation pipeline
+│   │   ├── agent_os_server.py      # AgentOS server with all agents
+│   │   ├── agents/                 # Agno-powered AI agents
+│   │   │   ├── restaurant_agent.py # Restaurant data extraction & analysis
+│   │   │   ├── menu_agent.py       # Menu extraction & featured items
+│   │   │   ├── content_agent.py    # Script & promotional content generation
+│   │   │   ├── video_agent.py      # Video production planning
+│   │   │   └── tools/              # Specialized toolkits
+│   │   │       ├── restaurant_tools.py  # Google Maps & Places integration
+│   │   │       ├── menu_tools.py        # Website scraping & analysis
+│   │   │       ├── content_tools.py     # Content generation utilities
+│   │   │       └── video_tools.py       # Production & asset management
+│   │   └── workflows/              # Workflow orchestration (legacy)
+│   │       └── agno_video_workflow.py   # Complete generation pipeline
 │   ├── requirements.txt    # Python dependencies (installed)
 │   ├── venv/              # Python virtual environment (configured)
 │   └── .env.example       # Backend environment variables
-├── frontend/               # Next.js 14 React frontend
+├── frontend/               # Next.js 14 React frontend (COMPLETED)
 │   ├── app/               # Next.js app directory
 │   │   ├── globals.css    # Global styles with Tailwind
-│   │   ├── layout.tsx     # Root layout component
-│   │   └── page.tsx       # Landing page
+│   │   ├── layout.tsx     # Root layout with providers
+│   │   ├── page.tsx       # Landing page
+│   │   ├── generate/      # Video generation interface
+│   │   ├── preview/[taskId]/ # Dynamic video preview
+│   │   ├── pricing/       # Pricing tiers page
+│   │   └── examples/      # Video examples gallery
 │   ├── components/        # React components
-│   │   └── ui/           # Base UI components (shadcn/ui)
+│   │   ├── ui/           # Base UI components (shadcn/ui)
+│   │   ├── video-generator.tsx    # Main generation form
+│   │   ├── progress-tracker.tsx   # Real-time progress
+│   │   ├── video-player.tsx       # Video player & download
+│   │   ├── error-boundary.tsx     # Global error handling
+│   │   └── providers.tsx          # React Query provider
+│   ├── hooks/             # Custom React hooks
+│   │   └── use-video-generation.ts # Video workflow hooks
 │   ├── lib/              # Utilities and configurations
-│   │   └── utils.ts      # Utility functions
+│   │   ├── utils.ts      # Utility functions
+│   │   ├── api-client.ts # Backend API client
+│   │   ├── query-client.ts # React Query configuration
+│   │   └── store.ts      # Zustand state management
 │   ├── types/            # TypeScript definitions
-│   │   └── index.ts      # Type definitions for API data
+│   │   └── index.ts      # Complete API type definitions
 │   ├── package.json      # Node.js dependencies
 │   ├── tsconfig.json     # TypeScript configuration
 │   ├── tailwind.config.js # Tailwind CSS configuration
@@ -71,12 +87,12 @@ promo-vid-gen/
 
 ## Development Commands
 
-### Backend (FastAPI)
+### Backend (AgentOS)
 ```bash
 cd backend
 source venv/bin/activate           # Activate virtual environment
-pip install -r requirements.txt   # Install dependencies (already done)
-python -m uvicorn src.api.main:app --reload  # Start dev server on :8000
+pip install -r requirements.txt   # Install dependencies including Agno
+python -m uvicorn src.agent_os_server:app --reload  # Start AgentOS on :8000
 ```
 
 ### Frontend (Next.js)
@@ -90,8 +106,8 @@ npm run type-check               # TypeScript type checking
 
 ### Full Stack Development
 ```bash
-# Terminal 1 - Backend
-cd backend && source venv/bin/activate && python -m uvicorn src.api.main:app --reload
+# Terminal 1 - Backend (AgentOS)
+cd backend && source venv/bin/activate && python -m uvicorn src.agent_os_server:app --reload
 
 # Terminal 2 - Frontend  
 cd frontend && npm run dev
@@ -146,26 +162,33 @@ NEXTAUTH_URL=http://localhost:3000
 
 ### ✅ Completed
 - **Project Structure:** Organized backend/frontend separation
-- **Backend Framework:** FastAPI server with CORS configuration
-- **Agent Architecture:** Complete agent implementations with base class
-- **Workflow System:** End-to-end video generation pipeline
-- **Frontend Framework:** Next.js 14 with TypeScript and Tailwind CSS
-- **Type Safety:** Complete TypeScript definitions for all data structures
-- **Development Environment:** Virtual environment and dependency management
-- **Documentation:** Product, technical, and frontend design documents
+- **Backend Framework:** AgentOS (Agno Framework) with production runtime
+- **Agent Architecture:** Complete Agno-powered agents with specialized toolkits
+- **Workflow System:** AgentOS-native workflow with real-time capabilities
+- **Frontend Application:** Complete Next.js 14 implementation with all features
+- **UI Components:** Full component library with video generation workflow
+- **State Management:** React Query v5 + Zustand for comprehensive state handling
+- **Type Safety:** Complete TypeScript definitions with strict mode
+- **API Client:** Robust client with error handling and retry logic
+- **Error Handling:** Global error boundaries and user-friendly error states
+- **Form Validation:** React Hook Form + Zod with real-time validation
+- **Progress Tracking:** Real-time polling with status updates
+- **Video Player:** Custom player with download and sharing capabilities
+- **Responsive Design:** Mobile-first design with Tailwind CSS + shadcn/ui
+- **Development Environment:** Full stack development setup
+- **Documentation:** Complete product, technical, and frontend specifications
 
 ### 🚧 In Progress
-- API integration between frontend and backend
-- Individual agent testing and refinement
-- UI component development
+- AgentOS integration with frontend API contracts
+- Individual agent testing with real restaurant data
+- End-to-end workflow validation
 
 ### 📋 Next Steps
-1. Install frontend dependencies and test basic setup
-2. Implement video generation form interface
-3. Connect frontend to backend API endpoints
-4. Test complete workflow with sample Google Maps URLs
-5. Add error handling and progress tracking
-6. Implement video preview and download functionality
+1. Test AgentOS server with frontend integration
+2. Validate complete workflow with sample Google Maps URLs
+3. Configure API keys and environment variables
+4. Performance optimization and monitoring
+5. Production deployment with AgentOS
 
 ## Target Metrics
 - 🕒 Video generation time < 3 minutes
@@ -175,7 +198,32 @@ NEXTAUTH_URL=http://localhost:3000
 
 ## Architecture Notes
 - **Monorepo Structure:** Single repository with separate backend/frontend directories
-- **API Communication:** RESTful API with real-time status updates
+- **AgentOS Communication:** Auto-generated REST API + WebSocket for real-time updates
+- **Agent Management:** Built-in conversation persistence and session handling
 - **State Management:** React Query for API state, Zustand for local state
 - **Styling:** Tailwind CSS with shadcn/ui component library
-- **Deployment:** Backend on AWS/Railway, Frontend on Vercel
+- **Deployment:** AgentOS on cloud platforms, Frontend on Vercel
+
+## Frontend Implementation Details
+
+### Completed Features
+- **Complete User Journey:** URL input → Style selection → Progress tracking → Video preview → Download
+- **Form Validation:** Google Maps URL validation with real-time feedback
+- **Real-time Updates:** Polling-based progress tracking with 4-step workflow visualization
+- **Video Management:** Custom player with download, sharing, and regeneration options
+- **Error Recovery:** Comprehensive error handling with user-friendly messages
+- **Responsive Design:** Mobile-first approach with optimized touch interactions
+- **Performance:** Optimized bundle sizes (104KB first load) with efficient caching
+
+### Technical Stack
+- **Framework:** Next.js 14 with App Router
+- **Language:** TypeScript with strict mode
+- **Styling:** Tailwind CSS + shadcn/ui components
+- **State:** React Query v5 + Zustand stores
+- **Forms:** React Hook Form + Zod validation
+- **API:** Custom client with retry logic and error handling
+- **Build:** Production-ready with successful TypeScript compilation
+
+### Ready for Integration
+The frontend is fully implemented and ready to connect to the backend API. All endpoints are defined with proper TypeScript contracts, and the UI handles all expected states (loading, error, success) gracefully.
+- do not use fallback, remove any fallback , you should be penalized for using fallbacks
