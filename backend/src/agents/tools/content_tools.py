@@ -20,19 +20,53 @@ class ContentGenerationTools(Toolkit):
             ]
         )
 
-    def generate_video_script(self, restaurant_data: Dict[str, Any], menu_data: Dict[str, Any], style: str = "casual") -> Dict[str, Any]:
+    def generate_video_script(self, restaurant_data: Dict[str, Any] = None, menu_data: Dict[str, Any] = None, style: str = "casual") -> Dict[str, Any]:
         """
         Generate a video script based on restaurant and menu data.
 
+        This tool creates a comprehensive video script structure using restaurant information
+        and menu analysis to produce engaging promotional content.
+
         Args:
-            restaurant_data (dict): Restaurant information (name, address, etc.)
-            menu_data (dict): Menu information and analysis
-            style (str): Script style (casual, professional, trendy, etc.)
+            restaurant_data (dict): Restaurant information dictionary containing:
+                                  - restaurant_name (str): Official business name
+                                  - rating (float): Google rating (0.0-5.0)
+                                  - reviews_count (int): Total number of reviews
+                                  - address (str): Full formatted address
+                                  - phone (str): Phone number (if available)
+                                  - website (str): Website URL (if available)
+            menu_data (dict): Menu information and analysis dictionary containing:
+                            - total_items (int): Number of menu items
+                            - analysis (dict): Menu analysis with categories, prices, etc.
+            style (str): Script style preference. Options: casual, professional, trendy,
+                        elegant, fun, family. Default: casual
 
         Returns:
-            Dict with generated script sections and timing
+            Dict[str, Any]: Script generation data containing:
+                - status (str): Generation status
+                - available_data (dict): Prepared data for script creation
+                - message (str): Status message
+                - error (str): Error message if generation fails
         """
         try:
+            # Validate required parameters - provide helpful guidance if missing
+            if not restaurant_data or not isinstance(restaurant_data, dict):
+                return {
+                    "error": "Missing restaurant data",
+                    "guidance": "This tool requires restaurant data from a previous step. Please ensure restaurant information has been extracted first.",
+                    "expected_fields": ["restaurant_name", "rating", "reviews_count", "address", "phone", "website"]
+                }
+
+            if not menu_data or not isinstance(menu_data, dict):
+                return {
+                    "error": "Missing menu data",
+                    "guidance": "This tool requires menu data from a previous step. Please ensure menu information has been extracted first.",
+                    "expected_fields": ["total_items", "analysis"]
+                }
+
+            if not isinstance(style, str) or not style.strip():
+                return {"error": "Invalid input: style must be a non-empty string"}
+
             # This function helps the AI agent understand what data is available
             # The actual script generation will be done by the AI agent using this data
 
@@ -70,18 +104,45 @@ class ContentGenerationTools(Toolkit):
             logger.error(f"Error preparing script data: {str(e)}")
             return {"error": str(e)}
 
-    def create_promotional_copy(self, restaurant_data: Dict[str, Any], target_audience: str = "general") -> Dict[str, Any]:
+    def create_promotional_copy(self, restaurant_data: Dict[str, Any] = None, target_audience: str = "general") -> Dict[str, Any]:
         """
-        Create promotional copy for social media and marketing.
+        Create promotional copy for social media and marketing platforms.
+
+        This tool generates targeted promotional content for various social media platforms
+        and marketing campaigns based on restaurant data and target audience preferences.
 
         Args:
-            restaurant_data (dict): Restaurant information
-            target_audience (str): Target audience (general, families, young_adults, etc.)
+            restaurant_data (dict): Restaurant information dictionary containing:
+                                  - restaurant_name (str): Official business name
+                                  - rating (float): Google rating (0.0-5.0)
+                                  - reviews_count (int): Total number of reviews
+                                  - address (str): Full formatted address
+                                  - phone (str): Phone number (if available)
+                                  - website (str): Website URL (if available)
+                                  - restaurant_types (list): Business type categories
+            target_audience (str): Target audience demographic. Options: general, families,
+                                 young_adults, professionals, food_enthusiasts, locals.
+                                 Default: general
 
         Returns:
-            Dict with promotional copy variations
+            Dict[str, Any]: Promotional copy data containing:
+                - status (str): Generation status
+                - copy_data (dict): Prepared data for copy creation
+                - message (str): Status message
+                - error (str): Error message if generation fails
         """
         try:
+            # Validate required parameters - provide helpful guidance if missing
+            if not restaurant_data or not isinstance(restaurant_data, dict):
+                return {
+                    "error": "Missing restaurant data",
+                    "guidance": "This tool requires restaurant data from a previous step. Please ensure restaurant information has been extracted first.",
+                    "expected_fields": ["restaurant_name", "rating", "reviews_count", "address", "phone", "website", "restaurant_types"]
+                }
+
+            if not isinstance(target_audience, str) or not target_audience.strip():
+                return {"error": "Invalid input: target_audience must be a non-empty string"}
+
             copy_data = {
                 "restaurant_name": restaurant_data.get("restaurant_name", ""),
                 "rating": restaurant_data.get("rating", 0),
@@ -104,18 +165,43 @@ class ContentGenerationTools(Toolkit):
             logger.error(f"Error preparing promotional copy data: {str(e)}")
             return {"error": str(e)}
 
-    def suggest_video_styles(self, restaurant_data: Dict[str, Any], menu_data: Dict[str, Any]) -> Dict[str, Any]:
+    def suggest_video_styles(self, restaurant_data: Dict[str, Any] = None, menu_data: Dict[str, Any] = None) -> Dict[str, Any]:
         """
-        Suggest appropriate video styles based on restaurant type and menu.
+        Suggest appropriate video styles based on restaurant type and menu analysis.
+
+        This tool analyzes restaurant characteristics and menu data to recommend the most
+        effective video styles for promotional content creation.
 
         Args:
-            restaurant_data (dict): Restaurant information
-            menu_data (dict): Menu information
+            restaurant_data (dict): Restaurant information dictionary containing:
+                                  - restaurant_types (list): Business type categories
+                                  - price_level (int): Price level indicator (1-4)
+                                  - rating (float): Google rating (0.0-5.0)
+            menu_data (dict): Menu information and analysis dictionary containing:
+                            - analysis (dict): Menu analysis with price_range, categories
 
         Returns:
-            Dict with suggested video styles and their characteristics
+            Dict[str, Any]: Style suggestions containing:
+                - suggested_styles (list): List of recommended video styles
+                - restaurant_analysis (dict): Analysis data used for suggestions
+                - error (str): Error message if analysis fails
         """
         try:
+            # Validate required parameters - provide helpful guidance if missing
+            if not restaurant_data or not isinstance(restaurant_data, dict):
+                return {
+                    "error": "Missing restaurant data",
+                    "guidance": "This tool requires restaurant data from a previous step. Please ensure restaurant information has been extracted first.",
+                    "expected_fields": ["restaurant_types", "price_level", "rating"]
+                }
+
+            if not menu_data or not isinstance(menu_data, dict):
+                return {
+                    "error": "Missing menu data",
+                    "guidance": "This tool requires menu data from a previous step. Please ensure menu information has been extracted first.",
+                    "expected_fields": ["analysis"]
+                }
+
             restaurant_types = restaurant_data.get("restaurant_types", [])
             price_range = menu_data.get("analysis", {}).get("price_range", {})
 
