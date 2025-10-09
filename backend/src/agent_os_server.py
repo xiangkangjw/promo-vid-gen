@@ -47,6 +47,7 @@ restaurant_agent = Agent(
     name="Restaurant Specialist",
     model=create_model(),
     db=promo_db,
+    debug_mode=True,
     tools=[
         RestaurantDataTools(google_places_api_key=os.getenv("GOOGLE_PLACES_API_KEY")),
         DuckDuckGoTools()  # For additional research if needed
@@ -69,6 +70,7 @@ menu_agent = Agent(
     name="Menu Analyst",
     model=create_model(),
     db=promo_db,
+    debug_mode=True,
     tools=[
         MenuExtractionTools()
     ],
@@ -89,6 +91,7 @@ content_creator_agent = Agent(
     name="Content Creator",
     model=create_model(),
     db=promo_db,
+    debug_mode=True,
     tools=[
         ContentGenerationTools()
     ],
@@ -110,6 +113,7 @@ video_producer_agent = Agent(
     name="Video Producer",
     model=create_model(),
     db=promo_db,
+    debug_mode=True,
     tools=[
         VideoProductionTools(
             pexels_api_key=os.getenv("PEXELS_API_KEY"),
@@ -134,6 +138,7 @@ main_orchestrator = Agent(
     name="Promo Video Creator",
     model=create_model(),
     db=promo_db,
+    debug_mode=True,
     tools=[
         RestaurantDataTools(google_places_api_key=os.getenv("GOOGLE_PLACES_API_KEY")),
         MenuExtractionTools(),
