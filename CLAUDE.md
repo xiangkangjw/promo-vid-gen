@@ -227,3 +227,4 @@ NEXTAUTH_URL=http://localhost:3000
 ### Ready for Integration
 The frontend is fully implemented and ready to connect to the backend API. All endpoints are defined with proper TypeScript contracts, and the UI handles all expected states (loading, error, success) gracefully.
 - do not use fallback, remove any fallback , you should be penalized for using fallbacks
+- import should always at the top of the file
